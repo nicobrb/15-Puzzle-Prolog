@@ -1,30 +1,46 @@
 % Ground truth of 'sliding block puzzle'.
 % Modify the predicate board(+Board, +Dimension) to set the starting state of the problem. 
 % The rest of the domain is parametric, no need to modify it.
-board([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,v], 3).
-:- initialization(generate_end_position).
+board([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,v], 4).
+:- initialization(generate_goal_position).
 
 % board dimension
 dim(N) :- board(_, N).
 % starting position
 start_position(S) :- board(S, _).
-% goal position
-generate_end_position :-
-    retractall(end_position(_)),
+% generation of goal position: gen_list_solution generates a list of sorted integers ranging from 1 to N-1, then the blank "v" symbol
+% is appended. 
+generate_goal_position:- 
+    retractall(goal(_)),
     dim(N),
     L is N*N - 1,
-    findall(X, (between(1, L, X)), S0),
-    append(S0, ['v'], S),
-    assert(end_position(S)).
+    gen_list_solution(1, L, X),
+    append(X, ['v'], S),
+    assert(goal(S)).
 
-% If N % 2 == 1
+gen_list_solution(X,X,[X]) :- !.
+gen_list_solution(X,Y,[X|Xs]) :-
+    X =< Y,
+    Z is X+1,
+    gen_list_solution(Z,Y,Xs).
+
+
+% generate_goal_position :-
+%     retractall(goal(_)),
+%     dim(N),
+%     L is N*N - 1,
+%     findall(X, (between(1, L, X)), S0),
+%     append(S0, ['v'], S),
+%     assert(goal(S)).
+
+% If N is odd
 solvable(Board) :-
     dim(N),
     1 =:= N mod 2,
     count_inversions(Board, InvCount),
     % If inversion_count(board) % 2 == 0
     0 =:= InvCount mod 2, !.
-% If N % 2 == 0
+% If N is even
 solvable(Board) :- 
     dim(N),
     0 =:= N mod 2,
@@ -40,11 +56,11 @@ empty_pos(Board, Index) :-
     Index is I div N, !.
 
 pred(X, Y) :- 
-    number(Y), number(X), Y < X.
+    integer(Y), integer(X), Y < X.
 pred(X, _) :- 
-    number(X), Y1 is 0, Y1 < X, Y1 > 0.
+    integer(X), Y1 is 0, Y1 < X.
 pred(_, Y) :- 
-    number(Y), X1 is 0, Y < X1.
+    integer(Y), X1 is 0, Y < X1.
 
 count_inversions([], 0).
 count_inversions([H|T], R) :-
