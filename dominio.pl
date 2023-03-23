@@ -3,7 +3,7 @@
 % The rest of the domain is parametric, no need to modify it.
 board([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,v], 4).
 :- initialization(generate_goal_position).
-
+:-dynamic(board/2).
 % board dimension
 dim(N) :- board(_, N).
 % starting position
@@ -14,6 +14,9 @@ generate_goal_position:-
     retractall(goal(_)),
     dim(N),
     L is N*N - 1,
+    board(B,_),
+    nth0(I, B, v),
+    assert(posV(I)),
     gen_list_solution(1, L, X),
     append(X, ['v'], S),
     assert(goal(S)).
