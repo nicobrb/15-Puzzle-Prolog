@@ -12,7 +12,7 @@ applicabile(left, BlankPos):-
 applicabile(right, BlankPos):-
 	board(_,N), 
     Q is div(BlankPos, N)+1,
-    BlankPos = (Q*N - 1) .
+    BlankPos \== (Q*N - 1).
 
 
 trasforma(PrevBoard, left, BlankPos, NextBoard, NewBlankPos) :- 
