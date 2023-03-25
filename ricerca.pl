@@ -43,7 +43,8 @@ iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
 nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
     goal(Solution), 
     Position = Solution,
-    write('Solution found at depth '), write(MaxDepth),write('!\n').
+    depth(Depth),
+    write('Solution found at depth '), write(Depth),write('!\n').
 
 
 nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
