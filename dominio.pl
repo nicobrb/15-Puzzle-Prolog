@@ -1,8 +1,9 @@
 % Ground truth of 'sliding block puzzle'.
 % Modify the predicate board(+Board, +Dimension) to set the starting state of the problem. 
 % The rest of the domain is parametric, no need to modify it.
-board([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,v], 4).
+board([v,4,12,14,13,2,8,11,9,1,3,5,15,6,7,10], 4).
 :- initialization(generate_goal_position).
+
 :-dynamic(board/2).
 % board dimension
 dim(N) :- board(_, N).
@@ -59,11 +60,11 @@ empty_pos(Board, Index) :-
     Index is I div N, !.
 
 pred(X, Y) :- 
-    integer(Y), integer(X), Y < X.
+    number(Y), number(X), Y < X.
 pred(X, _) :- 
-    integer(X), Y1 is 0, Y1 < X.
+    number(X), Y1 is 0, Y1 < X, Y1 > 0.
 pred(_, Y) :- 
-    integer(Y), X1 is 0, Y < X1.
+    number(Y), X1 is 0, Y < X1.
 
 count_inversions([], 0).
 count_inversions([H|T], R) :-
