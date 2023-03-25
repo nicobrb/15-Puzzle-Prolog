@@ -12,8 +12,30 @@
 % hexaDown('010208040506070c090a0b100e0d0f03'). %010208040506070c090a0b100e0d0f03
 
 :-['dominio.pl'].
-
-prova(X) :- solvable(board).
-    
+:-['azioni.pl'].
 
 
+% initialize:-retractall(depth(_)),
+%             asserta(depth(10)).
+depth(10).
+
+prova(Soluzione) :- 
+    board(List,_), 
+    %solvable(List),
+    depth(Depth),
+    nth0(BlankPos,List,v),
+    replace(List,BlankPos,16,NewList), % da cambiare se vogliamo fare giochi diversi da quello del 15
+    hex_bytes(Hex,NewList),
+    fromHexToInteger(Hex,StartingBoard),
+    write('---- Depth: '), write(Depth),write('\n'),
+    nextMove(StartingBoard,Soluzione,BlankPos,[left, left, left], Depth).
+
+nextMove(Position,[Move|MoveList],BlankPos, [LastMove|PreviousTwoMoves] ,MaxDepth):-
+    MaxDepth > 0,
+    inverse(Move,Inverse),
+    applicabile(Inverse,BlankPos), 
+    notMember(Move, [LastMove|PreviousTwoMoves]),
+    trasforma(Position,Inverse,BlankPos,NewPosition,NewBlankPos),
+    popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
+    NuovaProfMax is ProfMax-1,
+    nextMove(NewPosition,ListaAzioni,NewBlankPos,LastMoves,NuovaProfMax).

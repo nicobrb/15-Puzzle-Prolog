@@ -67,6 +67,7 @@ pred(_, Y) :-
     number(Y), X1 is 0, Y < X1.
 
 count_inversions([], 0).
+
 count_inversions([H|T], R) :-
     include(pred(H), T, Filtered),
     length(Filtered, InversionCount),

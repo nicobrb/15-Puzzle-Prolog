@@ -1,38 +1,48 @@
 [library(dcg/basics)].
 
-applicabile(up, _):-
-	posV(V), board(_,N), V-N>=0.
-applicabile(down, _):-
-	posV(V), board(_,N), V+N<N*N.
-applicabile(left, _):-
-	posV(V), board(_,N), (V mod N) \==0. 
-applicabile(right, _):-
-	posV(V), board(_,N), (V mod (N-1)) \==0.
+left.
+rigth.
+up.
+down.
+
+applicabile(up, BlankPos):-
+	board(_,N), BlankPos-N>=0.
+applicabile(down, BlankPos):-
+	board(_,N), BlankPos+N < N*N.
+applicabile(left, BlankPos):-
+    board(_,N), (BlankPos mod N) > 0. 
+applicabile(right, BlankPos):-
+	board(_,N), BlankPos > 0, (BlankPos mod (N-1)) > 0.
+applicabile(right, 0).
 
 
-trasforma(PrevHexBoard, left, BlankPos, N, NewHexBoard) :- 
-    fromHexToInteger(PrevHexBoard, IntegerBoard),
+trasforma(PrevBoard, left, BlankPos, NextBoard, NewBlankPos) :- 
+    board(_, N),
     LeftIdx is N - BlankPos,
-    LeftDiff is (16<<(8*LeftIdx)) - (IntegerBoard /\ (15<<(8*LeftIdx))),
-    NewHexBoard is IntegerBoard + (LeftDiff) - (LeftDiff>>8).
+    LeftDiff is (16<<(8*LeftIdx)) - (PrevBoard /\ (15<<(8*LeftIdx))),
+    NextBoard is PrevBoard + (LeftDiff) - (LeftDiff>>8),
+    NewBlankPos is BlankPos - 1.
 
-trasforma(PrevHexBoard, right, BlankPos, N, NewHexBoard) :- 
-    fromHexToInteger(PrevHexBoard, IntegerBoard),
+trasforma(PrevBoard, right, BlankPos, NextBoard, NewBlankPos) :- 
+    board(_, N),
     RightIdx is N - BlankPos - 2,
-    RightDiff is (16<<(8*RightIdx)) - (IntegerBoard /\ (15<<(8*RightIdx))),
-    NewHexBoard is IntegerBoard + (RightDiff) - (RightDiff<<8).
+    RightDiff is (16<<(8*RightIdx)) - (PrevBoard /\ (15<<(8*RightIdx))),
+    NextBoard is PrevBoard + (RightDiff) - (RightDiff<<8),
+    NewBlankPos is BlankPos + 1.
 
-trasforma(PrevHexBoard, up, BlankPos, N, NewHexBoard) :- 
-    fromHexToInteger(PrevHexBoard, IntegerBoard),
+trasforma(PrevBoard, up, BlankPos, NextBoard, NewBlankPos) :- 
+    board(_, N),
     UpIdx is N - BlankPos + 3,
-    UpDiff is (16<<(8*UpIdx)) - (IntegerBoard /\ (15<<(8*UpIdx))),
-    NewHexBoard is IntegerBoard + (UpDiff) - (UpDiff>>(8*4)).
+    UpDiff is (16<<(8*UpIdx)) - (PrevBoard /\ (15<<(8*UpIdx))),
+    NextBoard is PrevBoard + (UpDiff) - (UpDiff>>(8*4)),
+    NewBlankPos is BlankPos - 4.
 
-trasforma(PrevHexBoard, down, BlankPos, N, NewHexBoard) :- 
-    fromHexToInteger(PrevHexBoard, IntegerBoard),
+trasforma(PrevBoard, down, BlankPos, NextBoard, NewBlankPos) :- 
+    board(_, N),
     DownIdx is N - BlankPos - 5,
-    DownDiff is (16<<(8*DownIdx)) - (IntegerBoard /\ (15<<(8*DownIdx))),
-    NewHexBoard is IntegerBoard + (DownDiff) - (DownDiff<<(8*4)).
+    DownDiff is (16<<(8*DownIdx)) - (PrevBoard /\ (15<<(8*DownIdx))),
+    NextBoard is PrevBoard + (DownDiff) - (DownDiff<<(8*4)),
+    NewBlankPos is BlankPos + 4.
 
 fromHexToInteger(H, N) :-
     atom_concat('0x', H, HexaAtom),
@@ -42,6 +52,26 @@ fromHexToInteger(H, N) :-
 fromIntegerToHex(N, H):- 
     phrase(xinteger(N), HexaCodes),
     atom_codes(H, HexaCodes). 
+
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+
+inverse(left, right).
+inverse(right, left).
+inverse(up, down).
+inverse(down, up).
+
+popAndAppend(List, Value, Result) :-
+    select(First, List, Rest),  % select the first element and the rest of the list
+    append(Rest, [Value], Result). % append the rest of the list and the first element
+
+
+notMember(_, []) :- !.
+
+notMember(X, [Head|Tail]) :-
+        X \= Head,
+    notMember(X, Tail).
+
 
 % trasforma(up, S0, S1):-
 % 	posV(V), board(_,N), NewPos is V-N, 
