@@ -10,16 +10,16 @@
 % hexaUp('0102081005060704090a0b0c0e0d0f03'). %0102081005060704090a0b0c0e0d0f03
 % listaDown([1,2,8,4,5,6,7,12,9,10,11,16,14,13,15,3]).
 % hexaDown('010208040506070c090a0b100e0d0f03'). %010208040506070c090a0b100e0d0f03
-
+%:- set_prolog_flag(answer_write_options,[max_depth(0)]).
 :-['dominio.pl'].
 :-['azioni.pl'].
 
 
-% initialize:-retractall(depth(_)),
-%             asserta(depth(10)).
-depth(10).
+initialize:- retractall(depth(_)),
+            assert(depth(1)).
 
 prova(Soluzione) :- 
+    initialize,
     board(List,_), 
     %solvable(List),
     depth(Depth),
@@ -27,15 +27,33 @@ prova(Soluzione) :-
     replace(List,BlankPos,16,NewList), % da cambiare se vogliamo fare giochi diversi da quello del 15
     hex_bytes(Hex,NewList),
     fromHexToInteger(Hex,StartingBoard),
-    write('---- Depth: '), write(Depth),write('\n'),
-    nextMove(StartingBoard,Soluzione,BlankPos,[left, left, left], Depth).
+    iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione).
 
-nextMove(Position,[Move|MoveList],BlankPos, [LastMove|PreviousTwoMoves] ,MaxDepth):-
+iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
+    write('---- Depth: '), write(Depth),write('\n'),
+    nextMove(StartingBoard,Solution,BlankPos,left, Depth).
+
+iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
+    NewDepth is Depth+1,
+    retractall(current_depth(_)),
+    assert(current_depth(NewDepth)),
+    iterativeDeepening(StartingBoard, BlankPos, NewDepth, Soluzione).
+
+
+nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
+    goal(Solution), 
+    Position = Solution,
+    write('Solution found at depth '), write(MaxDepth),write('!\n').
+
+
+nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
     MaxDepth > 0,
     inverse(Move,Inverse),
     applicabile(Inverse,BlankPos), 
-    notMember(Move, [LastMove|PreviousTwoMoves]),
+    %notMember(Move, [LastMove|PreviousTwoMoves]),
     trasforma(Position,Inverse,BlankPos,NewPosition,NewBlankPos),
-    popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
-    NuovaProfMax is ProfMax-1,
-    nextMove(NewPosition,ListaAzioni,NewBlankPos,LastMoves,NuovaProfMax).
+    % popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
+    NewDepth is MaxDepth-1,
+    nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
+
+

@@ -1,7 +1,10 @@
+[library(dcg/basics)].
+
 % Ground truth of 'sliding block puzzle'.
 % Modify the predicate board(+Board, +Dimension) to set the starting state of the problem. 
 % The rest of the domain is parametric, no need to modify it.
-board([v,4,12,14,13,2,8,11,9,1,3,5,15,6,7,10], 4).
+% board([v,4,12,14,13,2,8,11,9,1,3,5,15,6,7,10], 4).
+board([1,2,3,4,5,6,7,8,9,10,11,12,v,13,14,15], 4).
 :- initialization(generate_goal_position).
 
 :-dynamic(board/2).
@@ -11,6 +14,10 @@ dim(N) :- board(_, N).
 start_position(S) :- board(S, _).
 % generation of goal position: gen_list_solution generates a list of sorted integers ranging from 1 to N-1, then the blank "v" symbol
 % is appended. 
+
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+
 generate_goal_position:- 
     retractall(goal(_)),
     dim(N),
@@ -20,7 +27,11 @@ generate_goal_position:-
     assert(posV(I)),
     gen_list_solution(1, L, X),
     append(X, ['v'], S),
-    assert(goal(S)).
+    nth0(Pos,S,v),
+    replace(S,Pos,16,NewS), % da cambiare se vogliamo fare giochi diversi da quello del 15
+    hex_bytes(Hex, NewS),
+    fromHexToInteger(Hex,FinalBoard),
+    assert(goal(FinalBoard)).
 
 gen_list_solution(X,X,[X]) :- !.
 gen_list_solution(X,Y,[X|Xs]) :-
@@ -73,3 +84,13 @@ count_inversions([H|T], R) :-
     length(Filtered, InversionCount),
     count_inversions(T, R1),
     R is InversionCount + R1.
+
+fromHexToInteger(H, N) :-
+    atom_concat('0x', H, HexaAtom),
+    atom_codes(HexaAtom, HexaCodes),
+    number_codes(N, HexaCodes).
+
+fromIntegerToHex(N, H):- 
+    phrase(xinteger(N), HexaCodes),
+    atom_codes(H, HexaCodes). 
+
