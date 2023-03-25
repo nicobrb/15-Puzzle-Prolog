@@ -35,8 +35,8 @@ iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
 
 iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
     NewDepth is Depth+1,
-    retractall(current_depth(_)),
-    assert(current_depth(NewDepth)),
+    retractall(depth(_)),
+    assert(depth(NewDepth)),
     iterativeDeepening(StartingBoard, BlankPos, NewDepth, Soluzione).
 
 
