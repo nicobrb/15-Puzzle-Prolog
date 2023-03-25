@@ -3,12 +3,12 @@ rigth.
 up.
 down.
 
+applicabile(left, BlankPos):-
+    board(_,N), (BlankPos mod N) > 0. 
 applicabile(up, BlankPos):-
 	board(_,N), BlankPos-N>=0.
 applicabile(down, BlankPos):-
 	board(_,N), BlankPos+N < N*N.
-applicabile(left, BlankPos):-
-    board(_,N), (BlankPos mod N) > 0. 
 applicabile(right, BlankPos):-
 	board(_,N), 
     Q is div(BlankPos, N)+1,
@@ -17,7 +17,7 @@ applicabile(right, BlankPos):-
 
 trasforma(PrevBoard, left, BlankPos, NextBoard, NewBlankPos) :- 
     board(_, N), Length is N*N,
-    LeftIdx is  - BlankPos,
+    LeftIdx is  Length - BlankPos,
     LeftDiff is (16<<(8*LeftIdx)) - (PrevBoard /\ (15<<(8*LeftIdx))),
     NextBoard is PrevBoard + (LeftDiff) - (LeftDiff>>8),
     NewBlankPos is BlankPos - 1.

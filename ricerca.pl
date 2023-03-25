@@ -19,7 +19,6 @@ initialize:- retractall(depth(_)),
             assert(depth(1)).
 
 prova(Soluzione) :- 
-    initialize,
     board(List,_), 
     %solvable(List),
     depth(Depth),
@@ -29,30 +28,32 @@ prova(Soluzione) :-
     fromHexToInteger(Hex,StartingBoard),
     iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione).
 
-iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
-    write('---- Depth: '), write(Depth),write('\n'),
-    nextMove(StartingBoard,Solution,BlankPos,left, Depth).
-
-iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
+prova(Soluzione):-
+    depth(Depth),
     NewDepth is Depth+1,
     retractall(depth(_)),
     assert(depth(NewDepth)),
-    iterativeDeepening(StartingBoard, BlankPos, NewDepth, Soluzione).
+    prova(Soluzione).
+
+iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
+    write('---- Depth: '), write(Depth),write('\n'),
+    nextMove(StartingBoard,Solution,BlankPos, V, Depth).
 
 
 nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
     goal(Solution), 
     Position = Solution,
+    !,
     depth(Depth),
     write('Solution found at depth '), write(Depth),write('!\n').
 
 
 nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
     MaxDepth > 0,
-    inverse(Move,Inverse),
-    applicabile(Inverse,BlankPos), 
+    %inverse(Move,Inverse),
+    applicabile(Move,BlankPos), 
     %notMember(Move, [LastMove|PreviousTwoMoves]),
-    trasforma(Position,Inverse,BlankPos,NewPosition,NewBlankPos),
+    trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
     % popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
     NewDepth is MaxDepth-1,
     nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).

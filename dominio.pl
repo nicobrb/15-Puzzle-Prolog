@@ -3,9 +3,14 @@
 % Ground truth of 'sliding block puzzle'.
 % Modify the predicate board(+Board, +Dimension) to set the starting state of the problem. 
 % The rest of the domain is parametric, no need to modify it.
-% board([v,4,12,14,13,2,8,11,9,1,3,5,15,6,7,10], 4).
-board([1,2,3,4,5,6,7,8,9,10,11,12,v,13,14,15], 4).
-:- initialization(generate_goal_position).
+%   board([v,4,12,14,13,2,8,11,9,1,3,5,15,6,7,10], 4).
+%   board([1,2,3,4,5,6,7,8,9,10,12,v,13,14,11,15], 4). % funziona.
+%   board([1,2,3,4,5,6,7,8,9,v,10,12,13,14,11,15], 4). %funziona.
+%   board([1,2,3,4,5,6,7,8,9,14,10,12,13,v,11,15], 4). %funziona.
+%   board([1,2,3,4,5,6,7,8,9,10,15,11,13,14,v,12], 4). %funziona.
+%   board([1,v,2,4,5,6,3,8,9,10,7,11,13,14,15,12], 4).
+    board([5,1,3,4,9,2,11,7,v,6,10,8,13,14,15,12], 4). %scramble da 10 mosse
+:- initialization(generate_goal_position). 
 
 :-dynamic(board/2).
 % board dimension
