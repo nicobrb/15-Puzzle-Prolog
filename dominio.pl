@@ -9,7 +9,11 @@
 %   board([1,2,3,4,5,6,7,8,9,14,10,12,13,v,11,15], 4). %funziona.
 %   board([1,2,3,4,5,6,7,8,9,10,15,11,13,14,v,12], 4). %funziona.
 %   board([1,v,2,4,5,6,3,8,9,10,7,11,13,14,15,12], 4).
-    board([5,1,3,4,9,2,11,7,v,6,10,8,13,14,15,12], 4). %scramble da 10 mosse
+%   board([5,1,3,4,9,2,11,7,v,6,10,8,13,14,15,12], 4). %scramble da 10 mosse
+%   board([1,2,7,3,5,10,6,4,9,12,11,8,13,v,14,15], 4). % scramble 12 moves
+%   board([v,2,7,3,1,10,6,4,5,9,11,8,13,12,14,15], 4) % scramble 16 mosse
+   board([8,6,7,2,5,4,3,v,1], 3). % hardest 8 puzzle, 31 moves
+%   board([1,8,2,4,v,3,7,6,5], 3). % 9 moves
 :- initialization(generate_goal_position). 
 
 :-dynamic(board/2).
@@ -33,7 +37,8 @@ generate_goal_position:-
     gen_list_solution(1, L, X),
     append(X, ['v'], S),
     nth0(Pos,S,v),
-    replace(S,Pos,16,NewS), % da cambiare se vogliamo fare giochi diversi da quello del 15
+    Max is N*N,
+    replace(S,Pos,Max,NewS), % da cambiare se vogliamo fare giochi diversi da quello del 15
     hex_bytes(Hex, NewS),
     fromHexToInteger(Hex,FinalBoard),
     assert(goal(FinalBoard)).

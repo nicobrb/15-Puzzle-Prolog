@@ -19,11 +19,12 @@ initialize:- retractall(depth(_)),
             assert(depth(1)).
 
 prova(Soluzione) :- 
-    board(List,_), 
+    board(List,N), 
     %solvable(List),
     depth(Depth),
     nth0(BlankPos,List,v),
-    replace(List,BlankPos,16,NewList), % da cambiare se vogliamo fare giochi diversi da quello del 15
+    Max is N*N,
+    replace(List,BlankPos,Max,NewList), % da cambiare se vogliamo fare giochi diversi da quello del 
     hex_bytes(Hex,NewList),
     fromHexToInteger(Hex,StartingBoard),
     iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione).
