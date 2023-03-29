@@ -21,7 +21,7 @@ initialize:- retractall(depth(_)),
 
 prova(Soluzione) :- 
     board(List,N), 
-    %solvable(List),
+    solvable(List),
     depth(Depth),
     nth0(BlankPos,List,v),
     Max is N*N,
@@ -53,7 +53,8 @@ nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
 
 nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
     MaxDepth > 0,
-    %inverse(Move,Inverse),
+    inverse(Move,Inverse),
+    Inverse \== LastMove,
     applicabile(Move,BlankPos), 
     %notMember(Move, [LastMove|PreviousTwoMoves]),
     trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
