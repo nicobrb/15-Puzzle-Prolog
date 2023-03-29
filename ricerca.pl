@@ -17,6 +17,7 @@
 
 initialize:- retractall(depth(_)),
             assert(depth(1)).
+:-initialize.
 
 prova(Soluzione) :- 
     board(List,N), 
@@ -24,10 +25,11 @@ prova(Soluzione) :-
     depth(Depth),
     nth0(BlankPos,List,v),
     Max is N*N,
-    replace(List,BlankPos,Max,NewList), % da cambiare se vogliamo fare giochi diversi da quello del 
+    replace(List,BlankPos,Max,NewList),
     hex_bytes(Hex,NewList),
     fromHexToInteger(Hex,StartingBoard),
-    iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione).
+    iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione),
+    write(Soluzione).
 
 prova(Soluzione):-
     depth(Depth),
@@ -36,14 +38,14 @@ prova(Soluzione):-
     assert(depth(NewDepth)),
     prova(Soluzione).
 
-iterativeDeepening(StartingBoard,BlankPos, Depth, Soluzione):-
+iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
     write('---- Depth: '), write(Depth),write('\n'),
     nextMove(StartingBoard,Solution,BlankPos, V, Depth).
 
 
 nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
     goal(Solution), 
-    Position = Solution,
+    Position == Solution,
     !,
     depth(Depth),
     write('Solution found at depth '), write(Depth),write('!\n').
