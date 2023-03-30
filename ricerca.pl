@@ -21,9 +21,9 @@ initialize:- retractall(depth(_)),
 
 
 prova(Soluzione) :- 
-    board(List,N),
     is_solvable(X),
     X = 1,
+    board(List,N),
     depth(Depth),
     nth0(BlankPos,List,v),
     Max is N*N,
@@ -37,6 +37,8 @@ prova(Soluzione) :-
     write(Soluzione).
 
 prova(Soluzione):-
+    is_solvable(X),
+    X = 1,
     depth(Depth),
     NewDepth is Depth+1,
     retractall(depth(_)),
@@ -46,7 +48,7 @@ prova(Soluzione):-
 
 iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
     write('---- Depth: '), write(Depth),write('\n'),
-    asserta((nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
+    assertz((nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
         goal(Solution), 
         Position == Solution,
         !,
@@ -63,7 +65,6 @@ iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
         NewDepth is MaxDepth-1,
         nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth))),
     nextMove(StartingBoard,Solution,BlankPos, V, Depth).
-
 
 % nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
 %     goal(Solution), 
@@ -84,4 +85,4 @@ iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
 %     NewDepth is MaxDepth-1,
 %     nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
 
-    :-dynamic(nextMove/5).
+:-dynamic(nextMove/5).
