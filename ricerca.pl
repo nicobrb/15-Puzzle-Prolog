@@ -19,9 +19,11 @@ initialize:- retractall(depth(_)),
             assert(depth(1)).
 :-initialize.
 
+
 prova(Soluzione) :- 
-    board(List,N), 
-    solvable(List),
+    is_solvable(X),
+    X = 1,
+    board(List,N),
     depth(Depth),
     nth0(BlankPos,List,v),
     Max is N*N,
@@ -32,6 +34,8 @@ prova(Soluzione) :-
     write(Soluzione).
 
 prova(Soluzione):-
+    is_solvable(X),
+    X = 1,
     depth(Depth),
     NewDepth is Depth+1,
     retractall(depth(_)),
@@ -42,24 +46,20 @@ iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
     write('---- Depth: '), write(Depth),write('\n'),
     nextMove(StartingBoard,Solution,BlankPos, V, Depth).
 
+ nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
+     goal(Solution), 
+     Position == Solution,
+     !,
+     depth(Depth),
+     write('Solution found at depth '), write(Depth),write('!\n').
 
-nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
-    goal(Solution), 
-    Position == Solution,
-    !,
-    depth(Depth),
-    write('Solution found at depth '), write(Depth),write('!\n').
-
-
-nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
-    MaxDepth > 0,
-    inverse(Move,Inverse),
-    Inverse \== LastMove,
-    applicabile(Move,BlankPos), 
-    %notMember(Move, [LastMove|PreviousTwoMoves]),
-    trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
-    % popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
-    NewDepth is MaxDepth-1,
-    nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
-
-
+ nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
+     MaxDepth > 0,
+     inverse(Move,Inverse),
+     Inverse \== LastMove,
+     applicabile(Move,BlankPos), 
+     %notMember(Move, [LastMove|PreviousTwoMoves]),
+     trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
+     % popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
+     NewDepth is MaxDepth-1,
+     nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
