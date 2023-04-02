@@ -1,59 +1,15 @@
-:-['dominio.pl'].
-:-['azioni.pl'].
-:-['heuristics.pl'].
-
-initialize:- retractall(depth(_)),
-            assert(depth(1)).
-:-initialize.
-
+:-['dominio.pl', 'azioni.pl','./traversal_strategy/iterative_deepening_astar.pl'].
 
 prova(Soluzione) :- 
     is_solvable(X),
     X = 1,
     board(List,N),
-    depth(Depth),
     nth0(BlankPos,List,v),
     Max is N*N,
     replace(List,BlankPos,Max,NewList),
     hex_bytes(Hex,NewList),
     fromHexToInteger(Hex,StartingBoard),
-    iterativeDeepening(StartingBoard, BlankPos, Depth, Soluzione),
+    ida(StartingBoard, BlankPos, Soluzione),
     write(Soluzione).
 
-prova(Soluzione):-
-    is_solvable(X),
-    X = 1,
-    depth(Depth),
-    NewDepth is Depth+1,
-    retractall(depth(_)),
-    assert(depth(NewDepth)),
-    prova(Soluzione).
-
-iterativeDeepening(StartingBoard,BlankPos, Depth, Solution):-
-    write('---- Depth: '), write(Depth),write('\n'),
-    nextMove(StartingBoard,Solution,BlankPos, V, Depth).
-
- nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
-     goal(Solution), 
-     Position == Solution,
-     !,
-     depth(Depth),
-     write('Solution found at depth '), write(Depth),write('!\n').
-
-
-nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
-    MaxDepth > 0,
-    inverse(Move,Inverse),
-    Inverse \== LastMove,
-    applicabile(Move,BlankPos), 
-    trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
-    NewDepth is MaxDepth-1,
-    nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
-
-
-iterativeDeepeningAStart():-
-    write('---- Depth: '), write(Depth),write('\n'),
-    nextMove(StartingBoard,Solution,BlankPos, V, Depth).
-
-iterativeDeepeningAStar.
 

@@ -6,7 +6,7 @@ heuristic(CurrPos, Res) :-
 
 manhattan(CurrPos, Res) :-
     board(_, N), Max is N*N,
-    manhattan(CurrPos, Max, N, Max, Res), nodebug.
+    manhattan(CurrPos, Max, N, Max, Res).
 
 manhattan(_, 0, _, _, 0).
 
