@@ -31,9 +31,9 @@ nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, BlankPos, LastMove,
     applicabile(Move, BlankPos), 
     trasforma(Position, Move, BlankPos, NewPosition, NewBlankPos),
     heuristic(NewPosition, PositionCost),
-    F = G + PositionCost,
-    assert(possibleNode(NewPosition, PositionCost)),
-	PositionCost =< BoundCost,
+    F is G + PositionCost,
+    assert(possibleNode(NewPosition, F)),
+	F =< BoundCost,
     NewG is G + 1,
     nextMoveWithHeuristics(NewPosition, MoveList, BoundCost, NewBlankPos, Move, NewG).
 
