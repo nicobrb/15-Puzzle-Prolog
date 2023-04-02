@@ -7,7 +7,9 @@ heuristic(CurrPos, Res) :-
 manhattan(CurrPos, Res) :-
     board(_, N), Max is N*N,
     manhattan(CurrPos, Max, N, Max, Res), nodebug.
+
 manhattan(_, 0, _, _, 0).
+
 manhattan(CurrPos, CellIdx, N, Dim, Sum) :-
     CellVal is (CurrPos mod 16),
     CellVal =\= Dim mod 16, % this mod is needed to generalize to n-puzzle
@@ -18,6 +20,7 @@ manhattan(CurrPos, CellIdx, N, Dim, Sum) :-
     PartialPos is CurrPos >> 8,
     manhattan(PartialPos, NextIdx, N, Dim, PartialSum),
     Sum is abs(X1-X2) + abs(Y1-Y2) + PartialSum.
+
 manhattan(CurrPos, CellIdx, N, Dim, Sum) :-
     NextIdx is CellIdx - 1,
     PartialPos is CurrPos >> 8,

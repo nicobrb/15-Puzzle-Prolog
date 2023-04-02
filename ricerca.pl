@@ -43,10 +43,14 @@ nextMove(Position,[Move|MoveList],BlankPos,LastMove,MaxDepth):-
     inverse(Move,Inverse),
     Inverse \== LastMove,
     applicabile(Move,BlankPos), 
-    %notMember(Move, [LastMove|PreviousTwoMoves]),
     trasforma(Position,Move,BlankPos,NewPosition,NewBlankPos),
-    % popAndAppend([LastMove|PreviousTwoMoves],Inverse,LastMoves),
     NewDepth is MaxDepth-1,
     nextMove(NewPosition,MoveList,NewBlankPos,Move,NewDepth).
 
+
+iterativeDeepeningAStart():-
+    write('---- Depth: '), write(Depth),write('\n'),
+    nextMove(StartingBoard,Solution,BlankPos, V, Depth).
+
+iterativeDeepeningAStar.
 
