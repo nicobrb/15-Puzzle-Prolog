@@ -14,11 +14,15 @@
 %   board([v,2,7,3,1,10,6,4,5,9,11,8,13,12,14,15], 4). % scramble 16 mosse
 %   board([8,6,7,2,5,4,3,v,1], 3). % hardest 8 puzzle, 31 moves
 %   board([1,8,2,4,v,3,7,6,5], 3). % 9 moves
+board([7,1,3,6,2,v,4,5,8], 3).
+%   board([14,9,10,6,5,1,8,2,7,12,3,15,11,13,4,v], 4).
+%   board([3,v,4,8,1,10,2,6,5,13,7,12,14,9,11,15], 4).
 :- initialization(generate_goal_position). 
-
 :-dynamic(board/2).
 % board dimension
 dim(N) :- board(_, N).
+is_solvable(0).
+:-dynamic(is_solvable/1).
 % starting position
 start_position(S) :- board(S, _).
 % generation of goal position: gen_list_solution generates a list of sorted integers ranging from 1 to N-1, then the blank "v" symbol
@@ -59,21 +63,25 @@ gen_list_solution(X,Y,[X|Xs]) :-
 %     assert(goal(S)).
 
 % If N is odd
-solvable(Board) :-
-    dim(N),
+solvable:-
+    board(Board, N),
     1 =:= N mod 2,
     count_inversions(Board, InvCount),
     % If inversion_count(board) % 2 == 0
-    0 =:= InvCount mod 2, !.
+    0 =:= InvCount mod 2, !,
+    retractall(is_solvable(_)),
+    assert(is_solvable(1)).
 % If N is even
-solvable(Board) :- 
-    dim(N),
+solvable:-
+    board(Board, N), 
     0 =:= N mod 2,
     count_inversions(Board, InvCount),
     empty_pos(Board, EmptyIdx),
     % If (pos(v) % 2 == 0 and inversion_count(board) % 2 == 1)
     % or (pos(v) % 2 == 1 and inversion_count(board) % 2 == 0)
-    1 is (InvCount + EmptyIdx) mod 2, !.
+    1 is (InvCount + EmptyIdx) mod 2,!,
+    retractall(is_solvable(_)),
+    assert(is_solvable(1)).
 
 empty_pos(Board, Index) :-
     dim(N),
@@ -103,4 +111,6 @@ fromHexToInteger(H, N) :-
 fromIntegerToHex(N, H):- 
     phrase(xinteger(N), HexaCodes),
     atom_codes(H, HexaCodes). 
+
+:-solvable.
 
