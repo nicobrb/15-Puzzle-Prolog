@@ -2,9 +2,7 @@
 % heuristic(+CurrPos, ?Res)
 % CurrPos is the current board in hex format
 heuristic(CurrPos, Res) :-
-    manhattan(CurrPos, PartialRes), 
-    FloatRes is (1.5)*PartialRes,
-    Res is integer(FloatRes),
+    manhattan(CurrPos, Res),
     !.
 
 manhattan(CurrPos, Res) :-
