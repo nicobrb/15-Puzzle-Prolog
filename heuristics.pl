@@ -2,7 +2,7 @@
 % heuristic(+CurrPos, ?Res)
 % CurrPos is the current board in hex format
 heuristic(CurrPos, Res) :-
-    manhattan(CurrPos, Res).
+    manhattan(CurrPos, Res), !.
 
 manhattan(CurrPos, Res) :-
     board(_, N), Max is N*N,
