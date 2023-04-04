@@ -1,4 +1,4 @@
-:-['heuristics.pl'].
+:-['heuristics/manhattan.pl'].
 
 initialize:- retractall(h(_)),
             board(BoardList, N),
