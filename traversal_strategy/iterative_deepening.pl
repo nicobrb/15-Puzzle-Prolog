@@ -5,7 +5,7 @@ initialize:- retractall(depth(_)),
 iterativeDeepening(StartingBoard, BlankPos, Solution):-
     depth(Depth),
     write('---- Depth: '), write(Depth), write('\n'),
-    nextMove(StartingBoard, Solution, BlankPos, LastMove, Depth).
+    nextMove(StartingBoard, Solution, BlankPos, _, Depth).
 
 iterativeDeepening(StartingBoard, BlankPos, Solution):-
     depth(Depth),
@@ -15,7 +15,7 @@ iterativeDeepening(StartingBoard, BlankPos, Solution):-
     iterativeDeepening(StartingBoard, BlankPos, Solution).
 
 
- nextMove(Position, [], BlankPos, LastMove, MaxDepth):-
+ nextMove(Position, [], _, _, _):-
      goal(Solution), 
      Position == Solution,
      !,

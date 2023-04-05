@@ -20,7 +20,6 @@
 board([1,10,15,4,13,6,3,8,2,9,12,7,14,5,v,11], 4). % 35 mosse
 % board([9,14,7,13,6,4,5,3,15,11,v,1,10,2,8,12], 4).
 %board([v,12,9,13,15,11,10,14,3,7,2,5,4,8,6,1], 4). % 80 mosse
-:- initialization(generate_goal_position). 
 :-dynamic(board/2).
 % board dimension
 dim(N) :- board(_, N).
@@ -34,36 +33,24 @@ start_position(S) :- board(S, _).
 replace([_|T], 0, X, [X|T]).
 replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
 
-generate_goal_position:- 
-    retractall(goal(_)),
-    dim(N),
-    L is N*N - 1,
-    board(B,_),
-    nth0(I, B, v),
-    assert(posV(I)),
-    gen_list_solution(1, L, X),
-    append(X, ['v'], S),
-    nth0(Pos,S,v),
+
+generateGoal:-
+    board(_,N),
     Max is N*N,
-    replace(S,Pos,Max,NewS), % da cambiare se vogliamo fare giochi diversi da quello del 15
-    hex_bytes(Hex, NewS),
-    fromHexToInteger(Hex,FinalBoard),
-    assert(goal(FinalBoard)).
+    Position is Max-1,
+    calculateGoal(Solution, Position, Max),
+    retractall(goal(_)),
+    assert(goal(Solution)),
+    !.
 
-gen_list_solution(X,X,[X]) :- !.
-gen_list_solution(X,Y,[X|Xs]) :-
-    X =< Y,
-    Z is X+1,
-    gen_list_solution(Z,Y,Xs).
+calculateGoal(Max, 0, Max).
+    
+calculateGoal(Solution, Position, Max):-
+    NewPos is Position-1,
+    calculateGoal(NewSolution, NewPos, Max),
+    Solution is NewSolution + ((Max-Position)* (1<<(8*Position))).
 
-
-% generate_goal_position :-
-%     retractall(goal(_)),
-%     dim(N),
-%     L is N*N - 1,
-%     findall(X, (between(1, L, X)), S0),
-%     append(S0, ['v'], S),
-%     assert(goal(S)).
+:-generateGoal.
 
 % If N is odd
 solvable:-
@@ -74,14 +61,13 @@ solvable:-
     0 =:= InvCount mod 2, !,
     retractall(is_solvable(_)),
     assert(is_solvable(1)).
+
 % If N is even
 solvable:-
     board(Board, N), 
     0 =:= N mod 2,
     count_inversions(Board, InvCount),
     empty_pos(Board, EmptyIdx),
-    % If (pos(v) % 2 == 0 and inversion_count(board) % 2 == 1)
-    % or (pos(v) % 2 == 1 and inversion_count(board) % 2 == 0)
     1 is (InvCount + EmptyIdx) mod 2,!,
     retractall(is_solvable(_)),
     assert(is_solvable(1)).
