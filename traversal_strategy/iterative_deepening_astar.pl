@@ -1,4 +1,4 @@
-:-['heuristics/manhattan.pl'].
+:-['heuristics/md_lc.pl'].
 
 initialize:- 
     retractall(h(_)),
