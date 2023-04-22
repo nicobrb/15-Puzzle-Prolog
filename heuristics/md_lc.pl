@@ -7,12 +7,12 @@ heuristic(CurrPos, Res) :-
     board(_,N),
     NewN is N+1,
     linear(CurrPos, 0, Lc, N, 1,NewN),
-    Res is M+Lc,
+    Res is M+(2*Lc),
     !.
 linear(CurrPos, Temp,Lc,N,Stop,Stop):-Lc is Temp.
 linear(CurrPos, TempLc,Lc, N, I,Stop):-
     %writeln(CurrPos+","+TempLc+","+Lc+","+N+","+I),
-    writeln("NEW LINEAR"),
+    %writeln("NEW LINEAR"),
     I=<(N+1),
     Partial is CurrPos >> (8 * N * I),
     PartialSecond is Partial << (8 * N * I),
@@ -27,9 +27,9 @@ linear(CurrPos, TempLc,Lc, N, I,Stop):-
     conflict(Col,J, Idx, C, "C", 0, -1,Idx),
     %nodebug,
     NewI is I+1,
-    writeln(C+","+R+"MEH"),
+    %writeln(C+","+R+"MEH"),
     NewTempLc is TempLc + C + R,
-    writeln("LC "+Lc),
+    %writeln("LC "+Lc),
     linear(CurrPos, NewTempLc, Lc, N, NewI,Stop).
 %conflict(_,0,-2,Result,_,_,_,_):-write(Result).
 %Hex esadecimale della riga/colonna da controllare
@@ -40,7 +40,7 @@ linear(CurrPos, TempLc,Lc, N, I,Stop):-
 % Temp variabile temporanea del risultato
 % Val valore attuale che si sta vedendo
 % IdxVal indice del valore che si sta controllando
-conflict(_,_,(-1),Result,_,Temp,_,_):-writeln(Temp),Result is Temp,!.
+conflict(_,_,(-1),Result,_,Temp,_,_):-Result is Temp,!.
 conflict(Hex, J, I, Result, Type, Temp, Val, IdxVal):-
     %writeln(Hex+" "+J+" "+I+" "+Result+" "+Type+" "+Temp+" "+Val+" "+IdxVal),  
     %write("ENTRA1"),

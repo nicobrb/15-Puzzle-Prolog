@@ -1,9 +1,9 @@
 % predicate wrapper to allow the heuristics to be changed transparently in the search method
 % heuristic(+CurrPos, ?Res)
 % CurrPos is the current board in hex format
-heuristic(CurrPos, Res) :-
-    manhattan(CurrPos, Res),
-    !.
+%heuristic(CurrPos, Res) :-
+%    manhattan(CurrPos, Res),
+%    !.
 
 manhattan(CurrPos, Res) :-
     board(_, N), Max is N*N,
