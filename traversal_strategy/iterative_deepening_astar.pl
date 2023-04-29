@@ -1,4 +1,4 @@
-:-['heuristics/md_lc.pl'].
+:-['heuristics/manhattan.pl'].
 
 initialize:- 
     retractall(h(_)),
@@ -21,7 +21,9 @@ ida(StartingBoard, BlankPos, Solution):-
     
 idastar(StartingBoard, Solution, Cost, BlankPos):-
     original(OriginalCost),
-    nextMoveWithHeuristics(StartingBoard, Solution, Cost, OriginalCost, BlankPos, _, 1).
+    originalR(R),
+    originalC(C),
+    nextMoveWithHeuristics(StartingBoard, Solution, Cost, OriginalCost, R, C,BlankPos, _, 1).
 
 idastar(StartingBoard, Solution, CostToUpdate, BlankPos):-
     findall(NodeCost, possibleNode(_, NodeCost), NodeCostList),
@@ -33,14 +35,14 @@ idastar(StartingBoard, Solution, CostToUpdate, BlankPos):-
     assert(h(NewCost)),
     ida(StartingBoard, BlankPos, Solution).
 
-nextMoveWithHeuristics(Position, [], _, _, _, _, G):-
+nextMoveWithHeuristics(Position, [], _, _, _, _, _, _, G):-
     goal(Solution), 
     Position == Solution,
     !,
     NewG is G-1,
     write('Solution found at depth '), write(NewG), write('!\n').
 
-nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, LastCost, BlankPos, LastMove, G):-
+nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, LastCost, LastLCRow, LastLCCol, BlankPos, LastMove, G):-
     inverse(Move, Inverse),
     Inverse \== LastMove,
     applicabile(Move, BlankPos), 
@@ -49,9 +51,12 @@ nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, LastCost, BlankPos,
     board(_, N),
     cellDistance(SwappedValue, NewBlankPos, N, OldCellManhattanDistance),
     cellDistance(SwappedValue, BlankPos, N, NewCellManhattanDistance),
-    PositionCost is (LastCost - OldCellManhattanDistance + NewCellManhattanDistance),
+    checkMove(Move,NewPosition,ResLC,LastLCRow,LastLCCol,NewLastLCRow,NewLastLCCol),
+    NewManahattan is (LastCost - OldCellManhattanDistance + NewCellManhattanDistance),
+    %writeln(LastLCRow+","+LastLCCol+","+NewLastLCRow+","+NewLastLCCol), 
+    PositionCost is (NewManahattan+ResLC-LastLCRow-LastLCCol), 
     F is G + PositionCost,
     assert(possibleNode(NewPosition, F)),
     F =< BoundCost,
     NewG is G + 1,
-    nextMoveWithHeuristics(NewPosition, MoveList, BoundCost, PositionCost, NewBlankPos, Move, NewG).
+    nextMoveWithHeuristics(NewPosition, MoveList, BoundCost, PositionCost, NewLastLCRow, NewLastLCCol, NewBlankPos, Move, NewG).
