@@ -1,8 +1,5 @@
-%:-['heuristics/manhattan.pl'].
-%:-assert(heur(md)).
-
-:-['heuristics/md_lc'].
-:-assert(heur(lc)).
+:-['heuristics/manhattan.pl'],assert(heur(md)),write("Manhattan Distance").
+%:-['heuristics/md_lc'],assert(heur(lc)),write("Linear Conflict").
 
 initialize:- 
     retractall(h(_)),
@@ -58,7 +55,6 @@ nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, LastCost, _, _, Bla
     Inverse \== LastMove,
     applicabile(Move, BlankPos), 
     trasforma(Position, Move, BlankPos, NewPosition, NewBlankPos, SwappedValue),
-    % heuristic(NewPosition, PositionCost),
     board(_, N),
     cellDistance(SwappedValue, NewBlankPos, N, OldCellManhattanDistance),
     cellDistance(SwappedValue, BlankPos, N, NewCellManhattanDistance),
@@ -75,7 +71,6 @@ nextMoveWithHeuristics(Position, [Move|MoveList], BoundCost, LastCost, LastLCRow
     Inverse \== LastMove,
     applicabile(Move, BlankPos), 
     trasforma(Position, Move, BlankPos, NewPosition, NewBlankPos, SwappedValue),
-    % heuristic(NewPosition, PositionCost),
     board(_, N),
     cellDistance(SwappedValue, NewBlankPos, N, OldCellManhattanDistance),
     cellDistance(SwappedValue, BlankPos, N, NewCellManhattanDistance),

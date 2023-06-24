@@ -165,7 +165,6 @@ conflict(Board, Current, Type, Temp, TempMax, Value, Result):-
     divmod(CheckValue,N,X1,Y1),
     isTarget(X1,Y1,Current,Type),
     Value > NewValue,
-    %write("BOARD: "+Board+" "+Type+" : "+Current+" CONFLITTO TRA "+Value+" E "+ NewValue+"\n"),
     NewTemp is Temp+1,
     conflict(Board, Current, Type, NewTemp, TempMax, Value, Result).
 
