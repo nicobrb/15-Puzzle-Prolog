@@ -6,7 +6,7 @@ cellDistance(CellVal, CellIdx, N, Distance):-
     Val is CellVal - 1,
     divmod(Val, N, X1, Y1),
     divmod(CellIdx, N, X2, Y2),
-    Distance is abs(X1-X2) + abs(Y1-Y2).
+    Distance is integer(1.8*(abs(X1-X2) + abs(Y1-Y2))).
 
 heuristic(CurrPos, Res) :-
     manhattan(CurrPos, Res),
