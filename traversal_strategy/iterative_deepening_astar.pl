@@ -1,5 +1,5 @@
-:-['heuristics/manhattan.pl'],assert(heur(md)),write("Manhattan Distance").
-%:-['heuristics/md_lc'],assert(heur(lc)),write("Linear Conflict").
+% :-['heuristics/manhattan.pl'],assert(heur(md)),write("Manhattan Distance").
+:-['heuristics/md_lc'],assert(heur(lc)),write("Linear Conflict").
 
 initialize:- 
     retractall(h(_)),

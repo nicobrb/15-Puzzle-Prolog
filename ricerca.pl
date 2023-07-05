@@ -1,4 +1,5 @@
 :-['dominio.pl', 'azioni.pl','./traversal_strategy/iterative_deepening.pl','./traversal_strategy/iterative_deepening_astar.pl'].
+% :-['dominio.pl', 'azioni.pl','./traversal_strategy/iterative_deepening.pl'].
 
 prova(Soluzione):- 
     is_solvable(X),
